@@ -46,8 +46,8 @@ class MlMain:
 	deltaCall = 100000
 
 	clf = None
-	savePath = './saveFile/saveFile_D40'
-	dataPath = '/home/joseph/Projects/F2MD/mdmSave/Data-1.0/IRT-Data-0.5/MDBsmsList_V2_2019-4-2_12:17:32'
+	savePath = 'D:RESULTS/saveFile_D40'
+	dataPath = 'D:RESULTS/IRT-DEMO12jam/MDBsmsList_V2_12jam-2019-12-04'
 	RTTrainDataFromFile = False
 
 	meanRuntime = 0
@@ -55,6 +55,7 @@ class MlMain:
 	numRuntime = 0
 	printRuntime = 1000
 	printRuntimeCnt = 0
+	Dataset=DataCollector
 
 	def init(self, version, AIType):
 		self.savePath = self.savePath +'_'+ str(version)
@@ -68,8 +69,8 @@ class MlMain:
 		self.trainedModelExists(AIType)
 		if self.RTTrainDataFromFile:
 			self.ReadDataFromFile(AIType)
-			#self.TrainData(AIType)
-			os._exit(0)
+			self.TrainData(AIType)
+			os._exit(0) 
 
 	def mlMain(self, version, bsmJsonString, AIType):
 		if not self.initiated:
@@ -97,7 +98,6 @@ class MlMain:
 					self.deltaCall = self.DataCollector.valuesCollection.shape[0]/2
 					#self.deltaCall = 10000000
 				print("DataSave And Training " + str(self.deltaCall) +" Finished!")
-		
 
 		return_value = "False"
 
@@ -128,8 +128,6 @@ class MlMain:
 			print('meanRuntime: ' + str(self.meanRuntime) + ' ' + str(self.numRuntime) + ' predict:' + str(self.meanRuntime_p))
 		else:
 			self.printRuntimeCnt = self.printRuntimeCnt + 1
-
-
 
 		return return_value
 
@@ -175,12 +173,17 @@ class MlMain:
 				for bsmJsom in listBsmJsom:
 					curArray = self.getNodeArray(bsmJsom,AIType)
 					self.DataCollector.collectData(curArray)
-
+		print("satu")
 		self.DataCollector.saveData()
-		self.Trainer.train(self.DataCollector)
-		self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
+		print("dua")
+		#self.Trainer.train(self.DataCollector)
+		print("tiga")
+		#Dataset=self.DataCollector
+        
+		#self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
 		#self.deltaCall = self.DataCollector.valuesCollection.shape[0]/5
-		print("DataSave And Training " + str(self.dataPath) + " Finished!")
+		print("tipe:",type(Dataset),"DataSave And Training " + str(self.dataPath) + " Finished!")
+        #start training
 
 	def TrainData(self, AIType):
 		print ("Training " + str(self.dataPath) + " Started ...")
@@ -196,20 +199,32 @@ class MlMain:
 		self.Storage.add_bsm(receiverId,pseudonym, time, bsmJsom, self.arrayLength)
 		if('SVM' in AIType):
 			returnArray = self.Storage.get_array(receiverId,pseudonym, self.arrayLength)
-		if('MLP' in AIType):
+		if('MLP_L4NV25' in AIType):
 			returnArray = self.Storage.get_array_MLP(receiverId,pseudonym, self.arrayLength)
 		if('LSTM' in AIType):
+			#returnArray = self.Storage.get_array_lstm(receiverId,pseudonym, self.arrayLength)
 			returnArray = self.Storage.get_array_lstm(receiverId,pseudonym, self.arrayLength)
-
+		#print("finish return array")
 		#print("cur_array: " + str(cur_array))
 		#print("returnArray: " + str(returnArray))
 		return returnArray
 
+	def getDataset(self):
+		globalMlMain = MlMain()
+		version = "V2"
+		AIType = "SVM"
+		globalMlMain.RTTrainDataFromFile = True
+		print("mulai gan")
+		globalMlMain.mlMain(version,"",AIType)
+		return Dataset 
+    
 def main():
 	globalMlMain = MlMain()
 	version = "V2"
-	AIType = "LSTM"
+	AIType = "MLP_L4NV25"
 	globalMlMain.RTTrainDataFromFile = True
 	globalMlMain.mlMain(version,"",AIType)
+	print("ini masuk ngga")
+	return Dataset 
 
 if __name__ == "__main__": main()

@@ -34,7 +34,7 @@ class MlNodeStorage:
 			Storage.add_bsm(test_id, time, cur_bsm, batch_size)
 			self.id_storage.append(Storage)
 
-	def get_array(self,my_id, test_id):
+	def get_array(self,my_id, test_id, batch_size):
 		index = self.id_index.index(my_id)
 		return self.id_storage[index].get_array(test_id)
 	def get_array_MLP(self,my_id, test_id, batch_size):

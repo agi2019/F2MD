@@ -17,7 +17,7 @@ from sklearn.externals import joblib
 from os import listdir
 from os.path import isfile, join
 import numpy as np
-
+from keras.layers.normalization import BatchNormalization
 from keras.models import Sequential  
 from keras.layers.core import Dense, Activation, Dropout  
 from keras.layers.recurrent import LSTM
@@ -32,7 +32,6 @@ from MLDataCollector import MlDataCollector
 class MlTrainer:
 
 	AIType = 'NotSet'
-
 	valuesFileStr = 'notSet'
 	targetFileStr = 'notSet'
 	savePath = ''
@@ -50,30 +49,35 @@ class MlTrainer:
 	def train(self, dataCollector):
 
 		if(self.AIType == 'SVM'):
+			print('selectSVM')
 			X, y = dataCollector.valuesCollection, dataCollector.targetCollection
 			y = to_categorical(y)
+			y= np.argmax(y, axis=1)
 			clf = SVC(gamma=0.001, C=100.)
 			clf.fit(X, y)
 
 		if(self.AIType == 'MLP_L1N15'):
+			print('selectMLP_L1N15')
 			X, y = dataCollector.valuesCollection, dataCollector.targetCollection
 			y = to_categorical(y)
 			clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(15,), random_state=1)
 			clf.fit(X, y)
 		if(self.AIType == 'MLP_L3N25'):
+			print('selectMLP_L3NV25')
 			X, y = dataCollector.valuesCollection, dataCollector.targetCollection
 			y = to_categorical(y)
 			clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,25,25,), random_state=1)
 			clf.fit(X, y)
 
 		if(self.AIType == 'MLP_L4NV25'):
+			print('selectMLP_L4NV25')
 			X, y = dataCollector.valuesCollection, dataCollector.targetCollection
 			y = to_categorical(y)
 			clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(20,25,22,16,), verbose=True,random_state=1)
 			clf.fit(X, y)
 
 		if(self.AIType == 'LSTM'):
-
+			print('LSTM')
 			print('Values_LSTM: ' + str(dataCollector.valuesCollection.shape))
 			print('Targets_LSTM: ' + str(dataCollector.targetCollection.shape))
 			X, y = dataCollector.valuesCollection, dataCollector.targetCollection
@@ -111,6 +115,7 @@ class MlTrainer:
 			clf.add(LSTM(256, return_sequences=False))
 			clf.add(Dense(y.shape[1],activation='softmax'))
 			clf.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'],weighted_metrics=['accuracy'])
-			clf.fit(X, y,epochs=20, batch_size=512,class_weight=d_weights)
-
-		joblib.dump(clf, self.savePath + '/clf_' + self.AIType + '_'+self.curDateStr+'.pkl')
+			clf.fit(X, y,epochs=1, batch_size=512,class_weight=d_weights)
+            
+		joblib.dump(clf, self.savePath + '/clf_' + self.AIType + '_24jam.pkl')
+		#joblib.dump(clf, self.savePath + '/clf_' + self.AIType + '_'+self.curDateStr+'.pkl')

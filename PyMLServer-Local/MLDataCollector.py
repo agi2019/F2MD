@@ -43,21 +43,23 @@ class MlDataCollector:
 		return self.targetCollection
 
 	def saveData(self):
+		print("initvalue")
 		self.initValuesData(self.ValuesData)
+		print("inittarget")
 		self.initTargetData(self.TargetData)
-
+		print("del")
 		del self.ValuesData[:]
 		del self.TargetData[:]
-
+		print("4empat")
 		self.ValuesData = []
 		self.TargetData = []
-
-		np.save(self.savePath+'/valuesSave_'+self.curDateStr, self.valuesCollection)
-		np.save(self.savePath+'/targetSave_'+self.curDateStr, self.targetCollection)
-
+		np.save('valuesSave12jam.npy', self.valuesCollection)
+		np.save('targetSave12jam.npy', self.targetCollection)
+		print("4empat")       
+		os._exit(0)
 	def loadData(self):
-		self.valuesCollection = np.load(self.savePath+'/valuesSave_'+self.curDateStr +'.npy' )
-		self.targetCollection = np.load(self.savePath+'/targetSave_'+self.curDateStr +'.npy')
+		self.valuesCollection = np.load('valuesSave24.npy' )
+		self.targetCollection = np.load('targetSave24.npy')
 		#print(self.valuesCollection[0:2])
 		#print(self.targetCollection[0:2])
 		self.initCollection = True	
@@ -71,7 +73,6 @@ class MlDataCollector:
 			self.valuesCollection = np.concatenate([row for row in New_Rows])
 		else:
 			self.valuesCollection  = np.concatenate([self.valuesCollection, np.concatenate([row for row in New_Rows])])
-		
 
 	def initTargetData(self,New_Rows):
 		if self.targetCollection.shape[0] == 0:
