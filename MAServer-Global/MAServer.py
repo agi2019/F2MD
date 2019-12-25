@@ -63,11 +63,12 @@ class S(BaseHTTPRequestHandler):
 
 
 def run(server_class=HTTPServer, handler_class=S, port=9998):
-	server_address = ('', port)
+	server_address = ('127.0.0.1', port)
 	httpd = server_class(server_address, handler_class)
 	print('Starting MAServer...')
 	print('Listening on port ' + str(port))
 	httpd.serve_forever()
+
 
 if __name__ == "__main__":
 	from sys import argv
@@ -75,5 +76,8 @@ if __name__ == "__main__":
 	if len(argv) == 3:
 		version = str(argv[2])
 		run(port=int(argv[1]))
+		#run(port=9998)
 	else:
 		print('not enough argv')
+
+
