@@ -1,4 +1,4 @@
 
 # Framework Simulasi Deteksi Serangan Sybil
 
-Proyek Simulasi deteksi serangan sybil, diadopsi dari F2MD
+Percobaan Simulasi deteksi serangan sybil, diadopsi dari F2MD
