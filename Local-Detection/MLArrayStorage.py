@@ -120,6 +120,11 @@ class MlArrayStorage:
 		HeadingConfidence = self.get_speed(bsmNew['BsmPrint']['BSMs'][0]['HeadingConfidence'])
 		DeltaTime = bsmNew['BsmPrint']['Metadata']['generationTime'] - bsmOld['BsmPrint']['Metadata']['generationTime']
 
+		CC = self.get_CC(pC,sC,psC,psmC,phC)
+		OBC = self.get_OBC(inT)
+		RBC = self.get_RBC(rP,pP,sP,sA)
+		BBC = self.get_BBC(bF)        
+        
 		if DeltaTime<0:
 			print('Error')
 
@@ -131,9 +136,9 @@ class MlArrayStorage:
 		else:
 			numLabel = 1.0
 
-		velAry1 = array([1.0-rP,1.0-pP,1.0-sP,1.0-pC,1.0-sC,1.0-psC,1.0-psmC,1.0-phC,1.0-sA,1.0-bF,1.0-kPACS,1.0-kPCS,1.0-kPSCP,1.0-kPSCS,1.0-kPSCSP,1.0-kPSCSS,1.0-kSCC,1.0-inT])
+		velAry1 = array([1.0-rP,1.0-pP,1.0-sP,1.0-pC,1.0-sC,1.0-psC,1.0-psmC,1.0-phC,1.0-sA,1.0-kPACS,1.0-kPCS,1.0-kPSCP,1.0-kPSCS,1.0-kPSCSP,1.0-kPSCSS,1.0-kSCC,1.0-inT])
 		zeros = np.count_nonzero(velAry1 == 1.0)
-		velAry2 = [zeros,DeltaPos, PosConfidence, Speed, DeltaSpeed, SpeedConfidence,Accel,DeltaAccel,AccelConfidence, DeltaHeading, HeadingConfidence, DeltaTime]
+		velAry2 = [CC,OBC,RBC,BBC,DeltaPos, PosConfidence, DeltaSpeed, SpeedConfidence,DeltaAccel,AccelConfidence, DeltaHeading, HeadingConfidence, DeltaTime]
 		velAry = velAry1.tolist() + velAry2
 		valuesArray = np.asarray(velAry)
 		targetArray = array([numLabel])
@@ -194,8 +199,26 @@ class MlArrayStorage:
 			return 0
 
 	def get_distance(self,p1,p2):
-		dist = ((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)**.5 
+		dist = (((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)**.5) 
+        
 		return dist
+
+	def get_CC(self,p1,p2,p3,p4,p5):
+		CC = round(1.0 - ((1.0-p1)**2 + (1.0-p2)**2 +(1.0-p3)**2+(1.0-p4)**2+(1.0-p5)**2)**.5) 
+		return CC
+    
+	def get_OBC(self,p1):
+		OBC = round(p1) 
+		return OBC
+    
+	def get_RBC(self,p1,p2,p3,p4):
+		RRC = round(1.0 - ((1.0-p1)**2 + (1.0-p2)**2 +(1.0-p3)**2+(1.0-p4)**2)**.5)
+		return RRC
+    
+	def get_BBC(self,p1):
+		BBC = round(p1)
+		return BBC    
+    
 	def get_speed(self,spd):
 		speed = math.sqrt((spd[0]**2) + (spd[1]**2))
 		return speed
