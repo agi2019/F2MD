@@ -119,7 +119,8 @@ class MlArrayStorage:
 		DeltaHeading = self.get_angle_delta(bsmNew['BsmPrint']['BSMs'][0]['Heading'], bsmOld['BsmPrint']['BSMs'][0]['Heading'])
 		HeadingConfidence = self.get_speed(bsmNew['BsmPrint']['BSMs'][0]['HeadingConfidence'])
 		DeltaTime = bsmNew['BsmPrint']['Metadata']['generationTime'] - bsmOld['BsmPrint']['Metadata']['generationTime']
-
+		
+		#simulated HCA, please request for real function
 		CC = self.get_CC(pC,sC,psC,psmC,phC)
 		OBC = self.get_OBC(inT)
 		RBC = self.get_RBC(rP,pP,sP,sA)
